@@ -59,7 +59,7 @@ def inches_to_centimeters() -> float:
     user_input = sanitize_user_input(user_input)
     if not is_number(user_input):
         print(f"\n{VOCAB['INVALID_INPUT']}")
-        inches_to_centimeters()
+        return inches_to_centimeters()
     else:
         res = round(float(user_input) * INCHES_TO_CENTIMETERS_FACTOR, 3)
         return res
@@ -72,7 +72,7 @@ def centimeters_to_inches() -> float:
     user_input = sanitize_user_input(user_input)
     if not is_number(user_input):
         print(f"\n{VOCAB['INVALID_INPUT']}")
-        centimeters_to_inches()
+        return centimeters_to_inches()
     else:
         res = round(float(user_input) * CENTIMETERS_TO_INCHES_FACTOR, 3)
         return res

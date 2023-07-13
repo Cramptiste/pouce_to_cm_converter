@@ -36,10 +36,13 @@ def pause():
     try:
         sys.stdin.flush()
         tty.setcbreak(sys.stdin.fileno())
+        sys.stdin.flush()
+        new_settings = termios.tcgetattr(sys.stdin)
+        new_settings[3] = new_settings[3] & ~termios.ICANON
+        termios.tcsetattr(sys.stdin, termios.TCSANOW, new_settings)
         sys.stdin.read(1)
     finally:
         termios.tcsetattr(sys.stdin, termios.TCSADRAIN, old_settings)
-
 
 def display_result(unit: str, res: float):
     print(f"Converted to {unit.lower()}:\n> {res}")

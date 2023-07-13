@@ -44,6 +44,10 @@ def display_result(unit: str, res: float):
     print(f"Converted to {unit.lower()}:\n> {res}")
 
 
+def print_invalid_input_error():
+    print(f"\n{VOCAB['INVALID_INPUT']}\n")
+
+
 def value_prompt(unit: str):
     return f"{unit}:\n> "
 
@@ -66,7 +70,7 @@ def inches_to_centimeters() -> float:
     )
     user_input = sanitize_user_input(user_input)
     if not is_number(user_input):
-        print(f"\n{VOCAB['INVALID_INPUT']}")
+        print_invalid_input_error()
         return inches_to_centimeters()
     else:
         res = round(float(user_input) * INCHES_TO_CENTIMETERS_FACTOR, 3)
@@ -79,7 +83,7 @@ def centimeters_to_inches() -> float:
     )
     user_input = sanitize_user_input(user_input)
     if not is_number(user_input):
-        print(f"\n{VOCAB['INVALID_INPUT']}")
+        print_invalid_input_error()
         return centimeters_to_inches()
     else:
         res = round(float(user_input) * CENTIMETERS_TO_INCHES_FACTOR, 3)
@@ -105,7 +109,7 @@ def prompt():
             print(VOCAB["QUIT_MSG"])
             break
         else:
-            print(f"\n{VOCAB['INVALID_INPUT']}")
+            print_invalid_input_error()
             prompt()
 
         if user_input != QUIT_CHOICE:

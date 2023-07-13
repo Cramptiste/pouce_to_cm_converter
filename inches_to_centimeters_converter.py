@@ -34,6 +34,7 @@ def input_handling_keyboard_interrupt_wrapper(input_msg: str) -> str:
 def pause():
     old_settings = termios.tcgetattr(sys.stdin)
     try:
+        sys.stdin.flush()
         tty.setcbreak(sys.stdin.fileno())
         sys.stdin.read(1)
     finally:
@@ -110,7 +111,7 @@ def prompt():
             break
         else:
             print_invalid_input_error()
-            prompt()
+            continue
 
         if user_input != QUIT_CHOICE:
             pause()

@@ -1,8 +1,6 @@
 # coding: utf-8
 
 import sys
-import tty
-import termios
 
 INCHES_TO_CENTIMETERS_FACTOR = 2.54
 CENTIMETERS_TO_INCHES_FACTOR = 0.394
@@ -22,27 +20,42 @@ VOCAB = {
 }
 
 
+def terminate(msg: str = ''):
+    print(msg)
+    exit(0)
+
+
 def input_handling_keyboard_interrupt_wrapper(input_msg: str) -> str:
     try:
         user_input = input(input_msg)
         return user_input
     except (KeyboardInterrupt, EOFError):
-        print(f"\n{VOCAB['QUIT_MSG']}")
-        exit(0)
+        terminate(f"\n{VOCAB['QUIT_MSG']}")
 
 
 def pause():
-    old_settings = termios.tcgetattr(sys.stdin)
-    try:
-        sys.stdin.flush()
-        tty.setcbreak(sys.stdin.fileno())
-        sys.stdin.flush()
-        new_settings = termios.tcgetattr(sys.stdin)
-        new_settings[3] = new_settings[3] & ~termios.ICANON
-        termios.tcsetattr(sys.stdin, termios.TCSANOW, new_settings)
-        sys.stdin.read(1)
-    finally:
-        termios.tcsetattr(sys.stdin, termios.TCSADRAIN, old_settings)
+    if sys.platform.startswith("win"):
+        import msvcrt
+
+        msvcrt.getch()
+    else:
+        import termios
+        import tty
+
+        old_settings = termios.tcgetattr(sys.stdin)
+        try:
+            sys.stdin.flush()
+            tty.setcbreak(sys.stdin.fileno())
+            new_settings = termios.tcgetattr(sys.stdin)
+            new_settings[3] = new_settings[3] & ~termios.ICANON
+            termios.tcsetattr(sys.stdin, termios.TCSANOW, new_settings)
+            input()
+        except:
+            terminate(f"\n{VOCAB['QUIT_MSG']}")
+        finally:
+            if not sys.stdin.closed:
+                termios.tcsetattr(sys.stdin, termios.TCSADRAIN, old_settings)
+
 
 def display_result(unit: str, res: float):
     print(f"Converted to {unit.lower()}:\n> {res}")

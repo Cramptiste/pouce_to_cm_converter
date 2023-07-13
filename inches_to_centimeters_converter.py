@@ -1,5 +1,8 @@
 # coding: utf-8
 
+import sys
+import tty
+import termios
 
 INCHES_TO_CENTIMETERS_FACTOR = 2.54
 CENTIMETERS_TO_INCHES_FACTOR = 0.394
@@ -29,7 +32,12 @@ def input_handling_keyboard_interrupt_wrapper(input_msg: str) -> str:
 
 
 def pause():
-    input()
+    old_settings = termios.tcgetattr(sys.stdin)
+    try:
+        tty.setcbreak(sys.stdin.fileno())
+        sys.stdin.read(1)
+    finally:
+        termios.tcsetattr(sys.stdin, termios.TCSADRAIN, old_settings)
 
 
 def display_result(unit: str, res: float):
@@ -102,6 +110,7 @@ def prompt():
 
         if user_input != QUIT_CHOICE:
             pause()
+            print()
 
 
 def runtime():
